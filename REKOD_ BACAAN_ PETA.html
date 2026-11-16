@@ -1,0 +1,1544 @@
+<!-- ...ENGLISH CODE COMMENT... -->
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BACA, REKOD DAN DENGAR - Kembara PeTa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brown-dark: #3A2211;
+      --brown-mid: #6B4226;
+      --gold-main: #EAB308;
+      --forest-green: #15803D;
+      --sea-blue: #0369A1;
+    }
+
+    * {
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #C1E1C1;
+      color: #29180D;
+      overflow: hidden; /* Mengelakkan scroll sepenuhnya untuk satu paparan muat skrin */
+      user-select: none;
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+    }
+
+    h1, h2, h3, .font-adventure {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Animasi Latar Belakang Pengembaraan Bergerak & Parallax Lembut */
+    .adventure-bg {
+      background: 
+        radial-gradient(circle at 50% 30%, rgba(193, 225, 193, 0.45) 0%, rgba(140, 185, 140, 0.9) 70%),
+        linear-gradient(135deg, #A3D9A3 0%, #C1E1C1 50%, #8FB88F 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .adventure-bg::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -50%; width: 200%; height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 40px 60px, rgba(253, 224, 71, 0.4), transparent),
+        radial-gradient(1.5px 1.5px at 120px 180px, rgba(255, 255, 255, 0.25), transparent),
+        radial-gradient(2px 2px at 280px 90px, rgba(253, 224, 71, 0.3), transparent);
+      background-repeat: repeat;
+      background-size: 350px 350px;
+      animation: driftClouds 50s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes driftClouds {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(350px); }
+    }
+
+    /* Partikel & Daun Bergoyang Lembut */
+    .floating-particle {
+      position: absolute;
+      background: rgba(253, 224, 71, 0.6);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: floatUp 8s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(105vh) scale(0.6); opacity: 0; }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    /* Kad Peta / Parchment */
+    .parchment-card {
+      background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+      border: 3px solid #78492A;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(217, 119, 6, 0.1);
+      position: relative;
+      z-index: 5;
+      width: 92%;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Butang Permainan Gaya 3D */
+    .btn-adventure {
+      transition: all 0.1s ease;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+    }
+    .btn-adventure:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    }
+    .btn-adventure:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: translateY(2px);
+    }
+
+    /* Kompas Needle Animation dengan Ease-Out Semula Jadi */
+    #compass-needle {
+      transition: transform 4.2s cubic-bezier(0.08, 0.82, 0.15, 1);
+      transform-origin: 50% 50%;
+    }
+
+    /* Animasi Peti Bergetar / Terbuka */
+    @keyframes chestPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.08) rotate(-2deg); }
+      70% { transform: scale(1.05) rotate(2deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .chest-open-anim {
+      animation: chestPop 0.6s ease-out forwards;
+    }
+
+    /* Animasi Denyar Rakaman */
+    @keyframes pulseRecord {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+      50% { transform: scale(1.03); box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+    }
+    .recording-active {
+      animation: pulseRecord 1.2s infinite;
+    }
+
+    /* Konfeti Pemenang */
+    @keyframes confettiFall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0.25; }
+    }
+    .confetti-piece {
+      position: fixed;
+      top: -20px;
+      z-index: 60;
+      pointer-events: none;
+      animation: confettiFall linear forwards;
+    }
+  </style>
+</head>
+<body class="adventure-bg h-screen w-screen flex flex-col justify-between overflow-hidden">
+
+  <!-- PARTIKEL LATAR BELAKANG -->
+  <div id="particles-container" class="absolute inset-0 overflow-hidden pointer-events-none z-1"></div>
+
+  <!-- BAR ATAS: IDENTITI & KEMAJUAN (Semasa Kembara) -->
+  <header id="top-bar" class="hidden relative z-20 bg-[#3A2E1B]/95 text-amber-50 border-b-3 border-amber-500 px-4 py-2.5 shadow-md flex-shrink-0">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-full bg-amber-400 text-[#3A2E1B] flex items-center justify-center font-adventure font-bold text-lg border-2 border-white shadow">
+          🧭
+        </div>
+        <div>
+          <p class="text-[10px] text-amber-300 uppercase tracking-wider font-bold">Pengembara</p>
+          <p id="display-student-name" class="font-adventure text-base leading-tight text-white">Murid</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Butang Kawalan Bunyi Muzik/Efek -->
+        <button id="btn-toggle-sound" type="button" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 border border-amber-400 shadow">
+          <span id="sound-icon">🔊</span>
+          <span id="sound-label">Bunyi: ON</span>
+        </button>
+
+        <div class="flex items-center gap-2 bg-[#21160D] px-3 py-1.5 rounded-xl border border-amber-500/60">
+          <span class="text-xs font-bold text-amber-200">KEMAJUAN:</span>
+          <span id="progress-counter" class="font-adventure text-xl font-bold text-yellow-400">0/4</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- KANDUNGAN UTAMA (SATU PAPARAN TANPA SCROLL) -->
+  <main class="relative z-20 flex-grow flex items-center justify-center p-3 sm:p-4 overflow-hidden">
+    
+    <!-- ==================== 1. HALAMAN UTAMA ==================== -->
+    <section id="screen-home" class="parchment-card rounded-2xl p-5 sm:p-7 text-center relative overflow-hidden shadow-2xl !max-w-xl sm:!max-w-md !w-[92%]">
+      <div class="absolute top-2 left-3 text-xl opacity-70">🌴</div>
+      <div class="absolute top-2 right-3 text-xl opacity-70">🦜</div>
+
+      <div class="w-28 h-24 mx-auto mb-2">
+        <svg viewBox="0 0 240 180" class="w-full h-full drop-shadow">
+          <ellipse cx="120" cy="145" rx="105" ry="26" fill="#0284C7" opacity="0.25"/>
+          <path d="M35 135 Q120 95 205 135 Z" fill="#FDE047" stroke="#B45309" stroke-width="3"/>
+          <path d="M62 122 Q55 85 68 62" stroke="#78350F" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M68 62 Q45 55 38 72 M68 62 Q52 40 72 36 M68 62 Q92 45 96 65" stroke="#15803D" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <rect x="92" y="52" width="76" height="58" rx="6" fill="#FEF3C7" stroke="#78492A" stroke-width="3"/>
+          <path d="M105 88 Q122 68 135 84 T155 66" stroke="#DC2626" stroke-width="3" stroke-dasharray="5,4" fill="none"/>
+          <rect x="115" y="102" width="46" height="30" rx="5" fill="#92400E" stroke="#451A03" stroke-width="3"/>
+          <rect x="115" y="112" width="46" height="6" fill="#FACC15"/>
+          <circle cx="138" cy="115" r="3.5" fill="#FEF08A" stroke="#78350F" stroke-width="1.5"/>
+          <circle cx="84" cy="118" r="16" fill="#FFFBEB" stroke="#B45309" stroke-width="3"/>
+          <polygon points="84,106 87,118 84,128 81,118" fill="#DC2626"/>
+        </svg>
+      </div>
+
+      <div class="inline-block bg-emerald-700 text-white font-adventure text-xs px-3 py-0.5 rounded-full mb-1 shadow">
+        KEMBARA PeTa
+      </div>
+      <h1 class="font-adventure text-2xl sm:text-3xl font-bold text-[#3A2E1B] tracking-tight mb-4">
+        BACA, REKOD DAN DENGAR
+      </h1>
+
+      <div class="max-w-sm mx-auto space-y-3 bg-white/85 p-4 rounded-xl border-2 border-amber-700/30 text-left">
+        <div>
+          <label for="student-name-input" class="block font-adventure text-sm font-bold text-[#3A2E1B] mb-1">
+            NAMA MURID:
+          </label>
+          <input 
+            type="text" 
+            id="student-name-input" 
+            placeholder="Taip nama kamu di sini..." 
+            autocomplete="off"
+            class="w-full px-3.5 py-2.5 text-base font-bold rounded-lg border-2 border-amber-600 focus:border-emerald-600 focus:outline-none bg-amber-50 text-[#29180D]"
+          >
+        </div>
+
+        <button 
+          id="btn-mic-access" 
+          type="button"
+          class="btn-adventure w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-adventure text-base font-bold flex items-center justify-center gap-2 border-2 border-sky-800"
+        >
+          <span class="text-xl">🎙️</span>
+          <span id="mic-btn-text">AKSES AUDIO (MIKROFON)</span>
+        </button>
+
+        <p id="mic-status-badge" class="text-xs font-bold text-amber-800 bg-amber-100 py-1 px-2.5 rounded-lg text-center">
+          Status Mikrofon: Belum Diaktifkan
+        </p>
+
+        <button 
+          id="btn-start-adventure" 
+          type="button"
+          disabled
+          class="btn-adventure w-full py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-adventure text-xl font-bold flex items-center justify-center gap-2 border-2 border-emerald-900"
+        >
+          <span>🗺️</span>
+          <span>MULA KEMBARA</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== 2 & 3. PAPARAN KEMBARA (KOMPAS + 4 PETI) ==================== -->
+    <section id="screen-adventure" class="hidden w-full h-full flex items-center justify-center">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full items-center">
+        
+        <!-- KOMPAS KEMBARA -->
+        <div class="md:col-span-5 parchment-card rounded-2xl p-4 flex flex-col items-center text-center min-h-[580px] sm:min-h-[630px] justify-between">
+          <div class="w-full flex flex-col items-center">
+            <h2 class="font-adventure text-xl font-bold text-[#3A2E1B] mb-2">KOMPAS KEMBARA</h2>
+            <div id="compass-instruction" class="w-full max-w-xs text-xs sm:text-sm font-bold text-[#3A2E1B] bg-white border-2 border-amber-600/60 py-2 px-3 rounded-xl shadow-md mb-2">
+              Arahan: Putar kompas terlebih dahulu untuk membuka peti kembara.
+            </div>
+          </div>
+
+          <div class="relative w-56 h-56 sm:w-64 sm:h-64 my-1">
+            <svg viewBox="0 0 300 300" class="w-full h-full drop-shadow-xl">
+              <circle cx="150" cy="150" r="142" fill="#78492A" stroke="#451A03" stroke-width="6"/>
+              <circle cx="150" cy="150" r="128" fill="#F59E0B" stroke="#FEF08A" stroke-width="3"/>
+              <circle cx="150" cy="150" r="114" fill="#FFFBEB" stroke="#B45309" stroke-width="4"/>
+              <line x1="150" y1="36" x2="150" y2="264" stroke="#D97706" stroke-width="2" stroke-dasharray="6,6"/>
+              <line x1="36" y1="150" x2="264" y2="150" stroke="#D97706" stroke-width="2" stroke-dasharray="6,6"/>
+              <polygon points="150,95 162,138 205,150 162,162 150,205 138,162 95,150 138,138" fill="#FDE68A" opacity="0.7"/>
+
+              <g id="num-badge-1">
+                <circle cx="150" cy="64" r="22" fill="#15803D" stroke="#FFF" stroke-width="3"/>
+                <text x="150" y="73" text-anchor="middle" font-family="Fredoka" font-size="24" font-weight="bold" fill="#FFFFFF">1</text>
+              </g>
+              <g id="num-badge-2">
+                <circle cx="236" cy="150" r="22" fill="#0369A1" stroke="#FFF" stroke-width="3"/>
+                <text x="236" y="159" text-anchor="middle" font-family="Fredoka" font-size="24" font-weight="bold" fill="#FFFFFF">2</text>
+              </g>
+              <g id="num-badge-3">
+                <circle cx="150" cy="236" r="22" fill="#B45309" stroke="#FFF" stroke-width="3"/>
+                <text x="150" y="245" text-anchor="middle" font-family="Fredoka" font-size="24" font-weight="bold" fill="#FFFFFF">3</text>
+              </g>
+              <g id="num-badge-4">
+                <circle cx="64" cy="150" r="22" fill="#7E22CE" stroke="#FFF" stroke-width="3"/>
+                <text x="64" y="159" text-anchor="middle" font-family="Fredoka" font-size="24" font-weight="bold" fill="#FFFFFF">4</text>
+              </g>
+
+              <!-- SATU JARUM PENUNJUK TUNGGAL -->
+              <g id="compass-needle">
+                <polygon points="150,42 164,150 150,175 136,150" fill="#DC2626" stroke="#7F1D1D" stroke-width="2.5"/>
+                <polygon points="150,42 150,175 136,150" fill="#EF4444"/>
+                <circle cx="150" cy="150" r="16" fill="#FACC15" stroke="#78350F" stroke-width="4"/>
+                <circle cx="150" cy="150" r="6" fill="#451A03"/>
+              </g>
+            </svg>
+          </div>
+
+          <button 
+            id="btn-spin-compass" 
+            type="button"
+            class="btn-adventure mt-3 w-full max-w-xs py-3 px-6 rounded-xl bg-amber-500 hover:bg-amber-600 text-[#29180D] font-adventure text-xl font-bold border-2 border-[#78492A] flex items-center justify-center gap-2"
+          >
+            <span>🧭</span>
+            <span>PUTAR KOMPAS</span>
+          </button>
+        </div>
+
+        <!-- EMPAT PETI HARTA KARUN -->
+        <div class="md:col-span-7 parchment-card rounded-2xl p-4 min-h-[580px] sm:min-h-[630px] flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="font-adventure text-xl font-bold text-[#3A2E1B]">PETI KEMBARA</h2>
+              <span class="text-[11px] font-bold bg-amber-800 text-amber-100 px-2.5 py-0.5 rounded-full">4 PETI KEMBARA</span>
+            </div>
+            <div class="w-full text-center text-xs sm:text-sm font-bold text-[#3A2E1B] bg-white border-2 border-amber-600/60 py-2 px-3 rounded-xl shadow-md mb-2">
+              Arahan: Buka semua peti kembara dan rekod bacaan ayat bagi setiap peti untuk menyelesaikan aktiviti ini!
+            </div>
+          </div>
+
+          <div id="chests-grid" class="grid grid-cols-2 gap-3 my-auto">
+            <!-- Dijana dinamik oleh JavaScript -->
+          </div>
+
+          <div class="text-center pt-1">
+            <div class="h-2"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 4 & 5 & 6 & 7 & 8. AKTIVITI DALAM PETI HARTA KARUN ==================== -->
+    <section id="screen-chest-activity" class="hidden parchment-card rounded-2xl p-4 sm:p-5 shadow-2xl">
+      
+      <!-- Kepala Aktiviti & Kemajuan Langkah Turutan -->
+      <div class="flex items-center justify-between pb-2 mb-2 border-b-2 border-amber-700/30">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">📦</span>
+          <h2 id="activity-chest-title" class="font-adventure text-xl sm:text-2xl font-bold text-[#3A2E1B]">
+            PETI KEMBARA 1
+          </h2>
+        </div>
+
+        <!-- Tiga Langkah Utama Mengikut Arahan -->
+        <div class="flex items-center gap-1.5 bg-amber-200/90 px-3 py-1.5 rounded-xl border border-amber-600/40 text-[11px] sm:text-xs font-bold text-[#3A2E1B]">
+          <span id="step-badge-1" class="text-emerald-700">1. REKOD</span>
+          <span>➔</span>
+          <span id="step-badge-2" class="text-slate-500">2. DENGAR</span>
+          <span>➔</span>
+          <span id="step-badge-3" class="text-slate-500">3. HANTAR</span>
+        </div>
+      </div>
+
+      <!-- ARAHAN SEBELUM GAMBAR -->
+      <div class="mb-2">
+        <p id="activity-step-status" class="text-center font-bold text-sm sm:text-base text-red-950 bg-red-100 py-1.5 px-3 rounded-xl border border-red-300">
+          Arahan: Tekan butang "REKOD BACAAN" dan baca ayat pada gambar.
+        </p>
+      </div>
+
+      <!-- FOKUS UTAMA: GAMBAR BACAAN (BESAR DAN JELAS) -->
+      <div class="bg-white rounded-xl border-3 border-[#78492A] p-2 mb-2.5 shadow-inner flex flex-col items-center justify-center relative h-[450px] sm:h-[480px]">
+        <div id="image-loader" class="flex flex-col items-center justify-center text-amber-800 py-6">
+          <div class="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-1"></div>
+          <p class="font-adventure text-xs font-bold">Memuatkan gambar...</p>
+        </div>
+
+        <img 
+          id="chest-reading-image" 
+          src="" 
+          alt="Gambar Bacaan Peti Harta Karun" 
+          class="hidden max-h-[435px] sm:max-h-[460px] w-auto max-w-full object-contain rounded-lg shadow-xs"
+        >
+
+        <div id="image-error-box" class="hidden text-center p-4">
+          <p class="font-bold text-xs text-red-700 mb-2">Gambar gagal dimuatkan.</p>
+          <button id="btn-retry-image" type="button" class="px-3 py-1.5 bg-amber-600 text-white font-bold rounded-lg text-xs">
+            Muat Semula
+          </button>
+        </div>
+      </div>
+
+      <!-- STATUS & INDIKATOR RAKAMAN -->
+      <div class="mb-2.5 space-y-1">
+        <div class="flex items-center justify-center">
+          <div id="recording-status-overlay" class="hidden items-center gap-1.5 bg-red-600/90 text-white text-[11px] font-bold px-3 py-0.5 rounded-full shadow">
+            <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+            <span id="recording-timer">00:00</span>
+          </div>
+        </div>
+
+        <audio id="audio-playback" class="hidden"></audio>
+      </div>
+
+      <!-- TIGA BUTANG UTAMA: 1. REKOD, 2. DENGAR, 3. HANTAR RAKAMAN -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        
+        <!-- 1. BUTANG REKOD / REKOD SEMULA -->
+        <button 
+          id="btn-record" 
+          type="button"
+          class="btn-adventure py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-adventure text-lg sm:text-xl font-bold border-2 border-red-900 flex items-center justify-center gap-2"
+        >
+          <span id="record-icon">🔴</span>
+          <span id="record-label">1. REKOD BACAAN</span>
+        </button>
+
+        <!-- 2. BUTANG DENGAR BACAAN -->
+        <button 
+          id="btn-listen" 
+          type="button"
+          disabled
+          class="btn-adventure py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-adventure text-lg sm:text-xl font-bold border-2 border-slate-950 flex items-center justify-center gap-2"
+        >
+          <span id="listen-icon">🎧</span>
+          <span id="listen-label">2. DENGAR BACAAN</span>
+        </button>
+
+        <!-- 3. BUTANG HANTAR RAKAMAN -->
+        <button 
+          id="btn-submit" 
+          type="button"
+          disabled
+          class="btn-adventure py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-adventure text-lg sm:text-xl font-bold border-2 border-emerald-900 flex items-center justify-center gap-2"
+        >
+          <span id="submit-icon">🚀</span>
+          <span id="submit-label">3. HANTAR RAKAMAN</span>
+        </button>
+
+      </div>
+
+      <!-- Kotak Ralat Penghantaran & Cuba Lagi -->
+      <div id="upload-error-box" class="hidden mt-2 bg-red-100 border-2 border-red-600 rounded-xl p-3 text-center">
+        <p id="upload-error-text" class="font-bold text-xs text-red-800 mb-2">Penghantaran gagal.</p>
+        <button 
+          id="btn-retry-upload" 
+          type="button"
+          class="btn-adventure px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white font-adventure font-bold rounded-lg text-xs border border-red-900"
+        >
+          🔄 CUBA LAGI
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ==================== 7. HALAMAN TAMAT KEMBARA ==================== -->
+    <section id="screen-victory" class="hidden parchment-card rounded-2xl p-6 text-center relative overflow-hidden shadow-2xl">
+      <div class="absolute top-4 left-6 text-2xl">✨</div>
+      <div class="absolute top-6 right-6 text-2xl">🌟</div>
+
+      <div class="w-44 h-36 mx-auto mb-3">
+        <svg viewBox="0 0 260 200" class="w-full h-full drop-shadow-xl">
+          <circle cx="130" cy="110" r="85" fill="#FDE047" opacity="0.45"/>
+          <path d="M55 85 Q130 25 205 85 L195 100 L65 100 Z" fill="#78350F" stroke="#451A03" stroke-width="4"/>
+          <path d="M62 85 Q130 35 198 85" stroke="#FACC15" stroke-width="6" fill="none"/>
+          <ellipse cx="130" cy="102" rx="64" ry="22" fill="#EAB308" stroke="#A16207" stroke-width="3"/>
+          <circle cx="95" cy="96" r="10" fill="#FEF08A" stroke="#CA8A04" stroke-width="2"/>
+          <circle cx="115" cy="92" r="11" fill="#FDE047" stroke="#CA8A04" stroke-width="2"/>
+          <circle cx="135" cy="90" r="12" fill="#FEF08A" stroke="#CA8A04" stroke-width="2"/>
+          <circle cx="155" cy="94" r="10" fill="#FDE047" stroke="#CA8A04" stroke-width="2"/>
+          <rect x="58" y="100" width="144" height="72" rx="10" fill="#92400E" stroke="#451A03" stroke-width="4"/>
+          <rect x="58" y="124" width="144" height="12" fill="#FACC15" stroke="#A16207" stroke-width="2"/>
+          <rect x="118" y="116" width="24" height="28" rx="4" fill="#FEF08A" stroke="#78350F" stroke-width="3"/>
+          <circle cx="130" cy="130" r="4" fill="#451A03"/>
+        </svg>
+      </div>
+
+      <h1 class="font-adventure text-xl sm:text-2xl font-bold text-[#3A2E1B] leading-snug mb-3">
+        TAHNIAH! ANDA TELAH BERJAYA MENYELESAIKAN STESEN 3 (STESEN GUA MUSANG)!
+      </h1>
+
+      <div class="bg-white/85 rounded-xl border-2 border-amber-600 p-3 mb-4 max-w-sm mx-auto">
+        <p class="font-adventure text-xs font-bold text-emerald-800 mb-2">
+          PETI KEMBARA (4/4 SELESAI)
+        </p>
+        <div class="flex items-center justify-between gap-1 px-1">
+          <div class="w-9 h-9 rounded-full bg-emerald-600 text-white font-adventure font-bold text-sm flex items-center justify-center border border-emerald-900">1✓</div>
+          <div class="h-1 flex-grow bg-emerald-500 rounded-full"></div>
+          <div class="w-9 h-9 rounded-full bg-emerald-600 text-white font-adventure font-bold text-sm flex items-center justify-center border border-emerald-900">2✓</div>
+          <div class="h-1 flex-grow bg-emerald-500 rounded-full"></div>
+          <div class="w-9 h-9 rounded-full bg-emerald-600 text-white font-adventure font-bold text-sm flex items-center justify-center border border-emerald-900">3✓</div>
+          <div class="h-1 flex-grow bg-emerald-500 rounded-full"></div>
+          <div class="w-9 h-9 rounded-full bg-emerald-600 text-white font-adventure font-bold text-sm flex items-center justify-center border border-emerald-900">4✓</div>
+        </div>
+      </div>
+
+      <button 
+        id="btn-finish-adventure" 
+        type="button"
+        class="btn-adventure py-3 px-8 rounded-xl bg-amber-500 hover:bg-amber-600 text-[#29180D] font-adventure text-xl font-bold border-2 border-[#78492A]"
+      >
+        🏆 TAMAT KEMBARA
+      </button>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL MESEJ AMARAN / RALAT (Ganti alert()) -->
+  <div id="custom-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="parchment-card rounded-2xl max-w-sm w-full p-5 text-center shadow-2xl">
+      <div id="modal-icon" class="text-4xl mb-2">⚠️</div>
+      <h3 id="modal-title" class="font-adventure text-xl font-bold text-[#3A2E1B] mb-1">Perhatian</h3>
+      <p id="modal-message" class="font-semibold text-sm text-[#29180D] mb-4"></p>
+      <button 
+        id="modal-close-btn" 
+        type="button"
+        class="btn-adventure w-full py-2.5 px-5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-adventure text-lg font-bold border border-amber-900"
+      >
+        FAHAM
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // KONFIGURASI GOOGLE APPS SCRIPT & DATA PETI HARTA KARUN
+    // =========================================================================
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzUXaYmdSzxw67YRmtNnUGnBmw22RY74Dc1_XceUXl55TNaNucSFZHckUT_ssesmm70qg/exec";
+    const DRIVE_FOLDER_ID = "1dn8BAqxrHq9HjwIEdxtAcsH-h7uP2-BH";
+
+    const CHEST_DATA = [
+      {
+        id: 1,
+        driveId: "1o2tRu6Y2fHS5KM_ZRmUieLSmuIUEPhc3",
+        urls: [
+          "https://lh3.googleusercontent.com/d/1o2tRu6Y2fHS5KM_ZRmUieLSmuIUEPhc3=s1200",
+          "https://drive.google.com/uc?export=view&id=1o2tRu6Y2fHS5KM_ZRmUieLSmuIUEPhc3",
+          "https://drive.google.com/thumbnail?id=1o2tRu6Y2fHS5KM_ZRmUieLSmuIUEPhc3&sz=w1200"
+        ]
+      },
+      {
+        id: 2,
+        driveId: "1k_8b5URazPbeejNM4oUvzTNk1YwjWLVm",
+        urls: [
+          "https://lh3.googleusercontent.com/d/1k_8b5URazPbeejNM4oUvzTNk1YwjWLVm=s1200",
+          "https://drive.google.com/uc?export=view&id=1k_8b5URazPbeejNM4oUvzTNk1YwjWLVm",
+          "https://drive.google.com/thumbnail?id=1k_8b5URazPbeejNM4oUvzTNk1YwjWLVm&sz=w1200"
+        ]
+      },
+      {
+        id: 3,
+        driveId: "1WNT-LgFWpq1h_14Qg2apTzaCfMFir-UX",
+        urls: [
+          "https://lh3.googleusercontent.com/d/1WNT-LgFWpq1h_14Qg2apTzaCfMFir-UX=s1200",
+          "https://drive.google.com/uc?export=view&id=1WNT-LgFWpq1h_14Qg2apTzaCfMFir-UX",
+          "https://drive.google.com/thumbnail?id=1WNT-LgFWpq1h_14Qg2apTzaCfMFir-UX&sz=w1200"
+        ]
+      },
+      {
+        id: 4,
+        driveId: "1FXwnhJRCVS96nk4ZzvQISkpAgdJ-Semd",
+        urls: [
+          "https://lh3.googleusercontent.com/d/1FXwnhJRCVS96nk4ZzvQISkpAgdJ-Semd=s1200",
+          "https://drive.google.com/uc?export=view&id=1FXwnhJRCVS96nk4ZzvQISkpAgdJ-Semd",
+          "https://drive.google.com/thumbnail?id=1FXwnhJRCVS96nk4ZzvQISkpAgdJ-Semd&sz=w1200"
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // AUDIO SYNTHESIZER (WEB AUDIO API UNTUK KESAN BUNYI)
+    // =========================================================================
+    let soundEnabled = true;
+    let audioCtx = null;
+    let compassSpinInterval = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // Bunyi Klik Putaran Kompas
+    function playCompassClickSound() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(110, now + 0.05);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      } catch (e) {}
+    }
+
+    // 1. Bunyi Kunci Dibuka
+    function playKeyUnlockSound() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(587.33, now); // D5
+        osc.frequency.setValueAtTime(880, now + 0.08); // A5
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } catch (e) {}
+    }
+
+    // 2. Bunyi Peti Kayu Berkeriut
+    function playChestCreakSound() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(220, now + 0.25);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } catch (e) {}
+    }
+
+    // 3. Bunyi Kilauan / Syiling Emas
+    function playCoinSparkleSound() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        const notes = [1318.51, 1567.98, 2093.00, 2637.02]; // E6, G6, C7, E7
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + (idx * 0.07));
+          gain.gain.setValueAtTime(0.09, now + (idx * 0.07));
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.07) + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + (idx * 0.07));
+          osc.stop(now + (idx * 0.07) + 0.25);
+        });
+      } catch (e) {}
+    }
+
+    // Gabungan Urutan Bunyi Peti Dibuka
+    function playChestOpenSequence() {
+      playKeyUnlockSound();
+      setTimeout(playChestCreakSound, 180);
+      setTimeout(playCoinSparkleSound, 400);
+    }
+
+    // Bunyi Kejayaan Penyimpanan Rakaman (Game Success Sound)
+    function playSaveSuccessSound() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + (idx * 0.08));
+          gain.gain.setValueAtTime(0.12, now + (idx * 0.08));
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.08) + 0.3);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + (idx * 0.08));
+          osc.stop(now + (idx * 0.08) + 0.3);
+        });
+      } catch (e) {}
+    }
+
+    // Bunyi Kemenangan Meriah
+    function playVictorySound() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        const fanfare = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50]; // C5, E5, G5, C6, G5, C6
+        const times = [0, 0.15, 0.3, 0.45, 0.7, 0.85];
+        fanfare.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + times[idx]);
+          gain.gain.setValueAtTime(0.15, now + times[idx]);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + times[idx] + 0.4);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + times[idx]);
+          osc.stop(now + times[idx] + 0.4);
+        });
+      } catch (e) {}
+    }
+
+    // Bunyi Mula Kembara (Magical Chime / Adventure Start)
+    function playStartAdventureSound() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        const notes = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + (idx * 0.08));
+          gain.gain.setValueAtTime(0.1, now + (idx * 0.08));
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.08) + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + (idx * 0.08));
+          osc.stop(now + (idx * 0.08) + 0.25);
+        });
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // KEADAAN APLIKASI (STATE)
+    // =========================================================================
+    const state = {
+      studentName: "",
+      micGranted: false,
+      mediaStream: null,
+      mediaRecorder: null,
+      audioChunks: [],
+      recordedBlob: null,
+      recordedMimeType: "",
+      recordedUrl: null,
+      isRecording: false,
+      isSpinning: false,
+      currentRotation: 0,
+      activeChestId: null,
+      hasListenedCompletely: false,
+      isUploading: false,
+      timerInterval: null,
+      recordSeconds: 0,
+      chestsStatus: { 1: "closed", 2: "closed", 3: "closed", 4: "closed" }
+    };
+
+    // =========================================================================
+    // RUJUKAN ELEMEN DOM
+    // =========================================================================
+    const screens = {
+      home: document.getElementById("screen-home"),
+      adventure: document.getElementById("screen-adventure"),
+      activity: document.getElementById("screen-chest-activity"),
+      victory: document.getElementById("screen-victory")
+    };
+
+    const topBar = document.getElementById("top-bar");
+    const displayStudentName = document.getElementById("display-student-name");
+    const progressCounter = document.getElementById("progress-counter");
+    const btnToggleSound = document.getElementById("btn-toggle-sound");
+    const soundIcon = document.getElementById("sound-icon");
+    const soundLabel = document.getElementById("sound-label");
+
+    const studentNameInput = document.getElementById("student-name-input");
+    const btnMicAccess = document.getElementById("btn-mic-access");
+    const micBtnText = document.getElementById("mic-btn-text");
+    const micStatusBadge = document.getElementById("mic-status-badge");
+    const btnStartAdventure = document.getElementById("btn-start-adventure");
+
+    const compassNeedle = document.getElementById("compass-needle");
+    const btnSpinCompass = document.getElementById("btn-spin-compass");
+    const compassInstruction = document.getElementById("compass-instruction");
+    const chestsGrid = document.getElementById("chests-grid");
+
+    const activityChestTitle = document.getElementById("activity-chest-title");
+    const chestReadingImage = document.getElementById("chest-reading-image");
+    const imageLoader = document.getElementById("image-loader");
+    const imageErrorBox = document.getElementById("image-error-box");
+    const btnRetryImage = document.getElementById("btn-retry-image");
+
+    const recordingStatusOverlay = document.getElementById("recording-status-overlay");
+    const recordingTimer = document.getElementById("recording-timer");
+    const activityStepStatus = document.getElementById("activity-step-status");
+    const audioPlayback = document.getElementById("audio-playback");
+    const waveformCanvas = document.getElementById("waveform-canvas");
+    let canvasCtx = waveformCanvas ? waveformCanvas.getContext("2d") : null;
+
+    const stepBadge1 = document.getElementById("step-badge-1");
+    const stepBadge2 = document.getElementById("step-badge-2");
+    const stepBadge3 = document.getElementById("step-badge-3");
+
+    const btnRecord = document.getElementById("btn-record");
+    const recordIcon = document.getElementById("record-icon");
+    const recordLabel = document.getElementById("record-label");
+
+    const btnListen = document.getElementById("btn-listen");
+    const listenIcon = document.getElementById("listen-icon");
+    const listenLabel = document.getElementById("listen-label");
+
+    const btnSubmit = document.getElementById("btn-submit");
+    const submitIcon = document.getElementById("submit-icon");
+    const submitLabel = document.getElementById("submit-label");
+
+    const uploadErrorBox = document.getElementById("upload-error-box");
+    const uploadErrorText = document.getElementById("upload-error-text");
+    const btnRetryUpload = document.getElementById("btn-retry-upload");
+
+    const btnFinishAdventure = document.getElementById("btn-finish-adventure");
+
+    const customModal = document.getElementById("custom-modal");
+    const modalIcon = document.getElementById("modal-icon");
+    const modalTitle = document.getElementById("modal-title");
+    const modalMessage = document.getElementById("modal-message");
+    const modalCloseBtn = document.getElementById("modal-close-btn");
+
+    // Bina partikel latar belakang secara automatik
+    function initParticles() {
+      const container = document.getElementById("particles-container");
+      if (!container) return;
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement("div");
+        p.className = "floating-particle";
+        p.style.left = `${Math.random() * 100}vw`;
+        p.style.width = `${4 + Math.random() * 6}px`;
+        p.style.height = p.style.width;
+        p.style.animationDuration = `${6 + Math.random() * 5}s`;
+        p.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(p);
+      }
+    }
+    initParticles();
+
+    // Kawalan Bunyi ON/OFF
+    btnToggleSound.addEventListener("click", () => {
+      soundEnabled = !soundEnabled;
+      if (soundEnabled) {
+        soundIcon.textContent = "🔊";
+        soundLabel.textContent = "Bunyi: ON";
+      } else {
+        soundIcon.textContent = "🔇";
+        soundLabel.textContent = "Bunyi: OFF";
+      }
+    });
+
+    function showModal(title, message, icon = "⚠️") {
+      modalIcon.textContent = icon;
+      modalTitle.textContent = title;
+      modalMessage.textContent = message;
+      customModal.classList.remove("hidden");
+    }
+
+    modalCloseBtn.addEventListener("click", () => {
+      customModal.classList.add("hidden");
+    });
+
+    function switchScreen(target) {
+      Object.values(screens).forEach(sec => sec.classList.add("hidden"));
+      screens[target].classList.remove("hidden");
+    }
+
+    function sanitizeFileNamePart(name) {
+      return name
+        .trim()
+        .replace(/[^a-zA-Z0-9_\-\s]/g, "")
+        .replace(/\s+/g, "_") || "Murid";
+    }
+
+    function updateStartButtonState() {
+      const hasName = studentNameInput.value.trim().length > 0;
+      btnStartAdventure.disabled = !(hasName && state.micGranted);
+    }
+
+    // =========================================================================
+    // 1. HALAMAN UTAMA & MIKROFON
+    // =========================================================================
+    studentNameInput.addEventListener("input", () => {
+      state.studentName = studentNameInput.value.trim();
+      updateStartButtonState();
+    });
+
+    btnMicAccess.addEventListener("click", async () => {
+      getAudioContext();
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showModal("Pelayar Tidak Disokong", "Peranti atau pelayar ini tidak menyokong rakaman mikrofon.", "❌");
+        return;
+      }
+
+      try {
+        btnMicAccess.disabled = true;
+        micBtnText.textContent = "MEMINTA KEBENARAN...";
+
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        state.mediaStream = stream;
+        state.micGranted = true;
+
+        micBtnText.textContent = "MIKROFON AKTIF ✓";
+        btnMicAccess.classList.remove("bg-sky-600", "hover:bg-sky-700", "border-sky-800");
+        btnMicAccess.classList.add("bg-emerald-600", "hover:bg-emerald-700", "border-emerald-900");
+
+        micStatusBadge.textContent = "Status Mikrofon: Dibenarkan ✓";
+        micStatusBadge.className = "text-xs font-bold text-emerald-800 bg-emerald-100 py-1 px-2.5 rounded-lg text-center";
+
+        updateStartButtonState();
+      } catch (err) {
+        state.micGranted = false;
+        btnMicAccess.disabled = false;
+        micBtnText.textContent = "AKSES AUDIO (MIKROFON)";
+        micStatusBadge.textContent = "Status Mikrofon: Ditolak / Gagal";
+        micStatusBadge.className = "text-xs font-bold text-red-800 bg-red-100 py-1 px-2.5 rounded-lg text-center";
+
+        showModal("Mikrofon Ditolak", "Sila benarkan penggunaan mikrofon pada tetapan pelayar anda.", "🎙️");
+      }
+    });
+
+    btnStartAdventure.addEventListener("click", () => {
+      const cleanName = studentNameInput.value.trim();
+      if (!cleanName) {
+        showModal("Masukkan Nama", "Sila taip nama kamu dahulu sebelum memulakan kembara.", "✏️");
+        return;
+      }
+      if (!state.micGranted) {
+        showModal("Akses Audio Diperlukan", "Sila tekan butang AKSES AUDIO dan benarkan mikrofon dahulu.", "🎙️");
+        return;
+      }
+
+      playStartAdventureSound();
+
+      state.studentName = cleanName;
+      displayStudentName.textContent = state.studentName;
+      topBar.classList.remove("hidden");
+
+      renderChests();
+      updateProgressUI();
+      switchScreen("adventure");
+    });
+
+    // =========================================================================
+    // 2 & 3 & 10. KOMPAS & PETI HARTA KARUN
+    // =========================================================================
+    function renderChests(justOpenedId = null) {
+      chestsGrid.innerHTML = "";
+
+      CHEST_DATA.forEach(chest => {
+        const status = state.chestsStatus[chest.id];
+        const isClosed = status === "closed";
+        const isActive = status === "active";
+        const isCompleted = status === "completed";
+
+        let cardBorder = "border-amber-800 bg-amber-100/90";
+        let statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-stone-300 text-stone-800">🔒 Belum dibuka</span>`;
+        let actionHint = "";
+
+        if (isActive) {
+          cardBorder = "border-amber-500 bg-yellow-100 ring-2 ring-amber-400";
+          statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-amber-950 animate-pulse">🔓 Sedang dibuat</span>`;
+          actionHint = `<button type="button" onclick="openChestActivity(${chest.id})" class="mt-1.5 w-full py-1.5 bg-emerald-600 text-white font-adventure font-bold rounded-lg text-xs shadow">BUKA AKTIVITI ➔</button>`;
+        } else if (isCompleted) {
+          cardBorder = "border-emerald-700 bg-emerald-100/95";
+          statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white">✅ Selesai</span>`;
+        }
+
+        const chestSvg = isClosed
+          ? `
+            <svg viewBox="0 0 140 110" class="w-24 h-20 mx-auto drop-shadow">
+              <path d="M22 45 Q70 18 118 45 L118 55 L22 55 Z" fill="#78350F" stroke="#451A03" stroke-width="3"/>
+              <rect x="22" y="53" width="96" height="46" rx="6" fill="#92400E" stroke="#451A03" stroke-width="3"/>
+              <rect x="22" y="51" width="96" height="8" fill="#FACC15" stroke="#A16207" stroke-width="1.5"/>
+              <rect x="60" y="46" width="20" height="22" rx="4" fill="#FEF08A" stroke="#78350F" stroke-width="2.5"/>
+              <circle cx="70" cy="57" r="3" fill="#451A03"/>
+            </svg>`
+          : `
+            <svg viewBox="0 0 140 110" class="w-24 h-20 mx-auto drop-shadow ${justOpenedId === chest.id ? 'chest-open-anim' : ''}">
+              <path d="M22 38 Q70 8 118 38 L112 52 L28 52 Z" fill="#78350F" stroke="#451A03" stroke-width="3"/>
+              <ellipse cx="70" cy="54" rx="40" ry="12" fill="#FACC15" stroke="#A16207" stroke-width="2"/>
+              <circle cx="58" cy="51" r="6" fill="#FEF08A"/>
+              <circle cx="72" cy="49" r="7" fill="#FDE047"/>
+              <circle cx="84" cy="52" r="6" fill="#FEF08A"/>
+              <rect x="22" y="54" width="96" height="45" rx="6" fill="#92400E" stroke="#451A03" stroke-width="3"/>
+              <rect x="22" y="68" width="96" height="7" fill="#FACC15"/>
+              <rect x="61" y="63" width="18" height="17" rx="3" fill="#FEF08A" stroke="#78350F" stroke-width="2"/>
+            </svg>`;
+
+        const card = document.createElement("div");
+        card.className = `rounded-xl border-2 p-3 flex flex-col items-center text-center transition-all ${cardBorder}`;
+        card.innerHTML = `
+          <div class="w-full flex items-center justify-between mb-0.5">
+            <span class="font-adventure text-sm font-bold text-[#3A2E1B]">PETI ${chest.id}</span>
+            ${statusBadge}
+          </div>
+          ${chestSvg}
+          ${actionHint}
+        `;
+        chestsGrid.appendChild(card);
+      });
+    }
+
+    function updateProgressUI() {
+      const completedCount = Object.values(state.chestsStatus).filter(s => s === "completed").length;
+      progressCounter.textContent = `${completedCount}/4`;
+
+      [1, 2, 3, 4].forEach(num => {
+        const badge = document.getElementById(`num-badge-${num}`);
+        if (badge) {
+          badge.style.opacity = state.chestsStatus[num] === "completed" ? "0.35" : "1";
+        }
+      });
+
+      const hasActiveChest = Object.values(state.chestsStatus).includes("active");
+      if (completedCount === 4) {
+        btnSpinCompass.disabled = true;
+        compassInstruction.textContent = "Arahan: Semua peti telah dibuka!";
+      } else if (hasActiveChest || state.isSpinning) {
+        btnSpinCompass.disabled = true;
+        compassInstruction.textContent = "Arahan: Selesaikan peti terbuka dahulu!";
+      } else {
+        btnSpinCompass.disabled = false;
+        compassInstruction.textContent = "Arahan: Putar kompas terlebih dahulu untuk membuka peti kembara.";
+      }
+    }
+
+    btnSpinCompass.addEventListener("click", () => {
+      if (state.isSpinning) return;
+
+      const availableNumbers = [1, 2, 3, 4].filter(num => state.chestsStatus[num] === "closed");
+      if (availableNumbers.length === 0) return;
+      if (Object.values(state.chestsStatus).includes("active")) return;
+
+      state.isSpinning = true;
+      btnSpinCompass.disabled = true;
+      compassInstruction.textContent = "Kompas sedang berpusing...";
+
+      // Bunyi interaktif semasa kompas berpusing
+      if (compassSpinInterval) clearInterval(compassSpinInterval);
+      let spinTicks = 0;
+      compassSpinInterval = setInterval(() => {
+        playCompassClickSound();
+        spinTicks++;
+        if (spinTicks > 22) {
+          clearInterval(compassSpinInterval);
+          compassSpinInterval = null;
+        }
+      }, 160);
+
+      const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+      const selectedNumber = availableNumbers[randomIndex];
+
+      const targetAngleMap = { 1: 0, 2: 90, 3: 180, 4: 270 };
+      const targetAngle = targetAngleMap[selectedNumber];
+
+      const currentMod = ((state.currentRotation % 360) + 360) % 360;
+      let delta = (targetAngle - currentMod + 360) % 360;
+      if (delta === 0) delta = 360;
+      const totalSpin = state.currentRotation + (360 * 4) + delta;
+      state.currentRotation = totalSpin;
+
+      compassNeedle.style.transform = `rotate(${totalSpin}deg)`;
+
+      // Selepas putaran selesai (~4.2 saat)
+      setTimeout(() => {
+        state.isSpinning = false;
+        if (compassSpinInterval) {
+          clearInterval(compassSpinInterval);
+          compassSpinInterval = null;
+        }
+        state.chestsStatus[selectedNumber] = "active";
+        compassInstruction.textContent = `Arahan: Peti ${selectedNumber} terpilih!`;
+
+        playChestOpenSequence();
+        renderChests(selectedNumber);
+        updateProgressUI();
+
+        setTimeout(() => {
+          openChestActivity(selectedNumber);
+        }, 850);
+      }, 4250);
+    });
+
+    // =========================================================================
+    // 4 & 5 & 6 & 7 & 8. AKTIVITI & GELOMBANG SUARA SEBENAR
+    // =========================================================================
+    function loadChestImage(chestObj, attemptIndex = 0) {
+      imageLoader.classList.remove("hidden");
+      chestReadingImage.classList.add("hidden");
+      imageErrorBox.classList.add("hidden");
+
+      if (attemptIndex >= chestObj.urls.length) {
+        imageLoader.classList.add("hidden");
+        imageErrorBox.classList.remove("hidden");
+        return;
+      }
+
+      chestReadingImage.onload = () => {
+        imageLoader.classList.add("hidden");
+        chestReadingImage.classList.remove("hidden");
+      };
+
+      chestReadingImage.onerror = () => {
+        loadChestImage(chestObj, attemptIndex + 1);
+      };
+
+      chestReadingImage.src = chestObj.urls[attemptIndex];
+    }
+
+    btnRetryImage.addEventListener("click", () => {
+      const chest = CHEST_DATA.find(c => c.id === state.activeChestId);
+      if (chest) loadChestImage(chest, 0);
+    });
+
+    function openChestActivity(chestId) {
+      state.activeChestId = chestId;
+      resetRecordingState();
+
+      const chest = CHEST_DATA.find(c => c.id === chestId);
+      activityChestTitle.textContent = `PETI KEMBARA ${chestId}`;
+      loadChestImage(chest, 0);
+
+      switchScreen("activity");
+    }
+
+    function resetRecordingState() {
+      if (state.recordedUrl) {
+        URL.revokeObjectURL(state.recordedUrl);
+      }
+      state.audioChunks = [];
+      state.recordedBlob = null;
+      state.recordedUrl = null;
+      state.isRecording = false;
+      state.hasListenedCompletely = false;
+      state.isUploading = false;
+
+      clearInterval(state.timerInterval);
+      state.recordSeconds = 0;
+      recordingTimer.textContent = "00:00";
+      recordingStatusOverlay.classList.add("hidden");
+      recordingStatusOverlay.classList.remove("flex");
+
+      audioPlayback.pause();
+      audioPlayback.removeAttribute("src");
+
+      // Set semula langkah turutan UI
+      stepBadge1.className = "text-emerald-700 font-bold";
+      stepBadge2.className = "text-slate-500";
+      stepBadge3.className = "text-slate-500";
+
+      btnRecord.disabled = false;
+      btnRecord.classList.remove("recording-active");
+      recordIcon.textContent = "🔴";
+      recordLabel.textContent = "1. REKOD BACAAN";
+
+      btnListen.disabled = true;
+      listenIcon.textContent = "🎧";
+      listenLabel.textContent = "2. DENGAR BACAAN";
+
+      btnSubmit.disabled = true;
+      submitIcon.textContent = "🚀";
+      submitLabel.textContent = "3. HANTAR RAKAMAN";
+
+      uploadErrorBox.classList.add("hidden");
+      activityStepStatus.textContent = 'Arahan: Tekan butang "REKOD BACAAN" dan baca ayat pada gambar.';
+      activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-red-950 bg-red-100 py-1.5 px-3 rounded-xl border border-red-300";
+    }
+
+    function formatTime(sec) {
+      const mins = String(Math.floor(sec / 60)).padStart(2, "0");
+      const secs = String(sec % 60).padStart(2, "0");
+      return `${mins}:${secs}`;
+    }
+
+    function getSupportedAudioMimeType() {
+      const types = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"];
+      for (const type of types) {
+        if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
+          return type;
+        }
+      }
+      return "";
+    }
+
+    // BUTANG REKOD / HENTI / REKOD SEMULA
+    btnRecord.addEventListener("click", async () => {
+      if (state.isUploading) return;
+
+      // Jika sedang merakam -> Hentikan rakaman
+      if (state.isRecording && state.mediaRecorder) {
+        try {
+          state.mediaRecorder.stop();
+        } catch (e) {}
+        return;
+      }
+
+      // Mulakan rakaman baharu atau rekod semula
+      try {
+        if (!state.mediaStream || !state.mediaStream.active) {
+          state.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          state.micGranted = true;
+        }
+
+        if (state.recordedUrl) {
+          URL.revokeObjectURL(state.recordedUrl);
+        }
+        state.audioChunks = [];
+        state.recordedBlob = null;
+        state.recordedUrl = null;
+        state.hasListenedCompletely = false;
+        btnListen.disabled = true;
+        btnSubmit.disabled = true;
+        uploadErrorBox.classList.add("hidden");
+
+        const mimeType = getSupportedAudioMimeType();
+        const options = mimeType ? { mimeType } : undefined;
+        const recorder = new MediaRecorder(state.mediaStream, options);
+
+        state.mediaRecorder = recorder;
+        state.recordedMimeType = recorder.mimeType || mimeType || "audio/webm";
+
+        recorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            state.audioChunks.push(event.data);
+          }
+        };
+
+        recorder.onstop = () => {
+          state.isRecording = false;
+          clearInterval(state.timerInterval);
+          recordingStatusOverlay.classList.add("hidden");
+          recordingStatusOverlay.classList.remove("flex");
+
+          if (state.audioChunks.length === 0) {
+            showModal("Tiada Audio", "Rakaman terlalu pendek. Sila rekod semula.", "🎙️");
+            return;
+          }
+
+          const cleanMime = state.recordedMimeType.split(";")[0];
+          const blob = new Blob(state.audioChunks, { type: cleanMime });
+          state.recordedBlob = blob;
+          state.recordedMimeType = cleanMime;
+          state.recordedUrl = URL.createObjectURL(blob);
+
+          audioPlayback.src = state.recordedUrl;
+          audioPlayback.load();
+
+          // Tukar butang kepada REKOD SEMULA
+        btnRecord.disabled = false;
+        btnRecord.classList.remove("recording-active");
+        recordIcon.textContent = "🔄";
+        recordLabel.textContent = "REKOD SEMULA";
+
+        // Aktifkan langkah 2 (Dengar)
+        btnListen.disabled = false;
+        stepBadge1.className = "text-slate-500";
+        stepBadge2.className = "text-sky-700 font-bold";
+
+        activityStepStatus.textContent = "Arahan: Bacaan telah direkod. Sila tekan butang \"DENGAR BACAAN\".";
+        activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-slate-900 bg-slate-200 py-1.5 px-3 rounded-xl border border-slate-400";
+      };
+
+      recorder.start(200);
+      state.isRecording = true;
+
+      btnRecord.classList.add("recording-active");
+      recordIcon.textContent = "⏹️";
+      recordLabel.textContent = "HENTI RAKAMAN";
+
+      state.recordSeconds = 0;
+      recordingTimer.textContent = "00:00";
+      recordingStatusOverlay.classList.remove("hidden");
+      recordingStatusOverlay.classList.add("flex");
+
+      activityStepStatus.textContent = 'Arahan: Sedang merekod bacaan. Tekan "HENTI RAKAMAN" apabila selesai.';
+      activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-red-950 bg-red-100 py-1.5 px-3 rounded-xl border border-red-300";
+
+      state.timerInterval = setInterval(() => {
+          state.recordSeconds += 1;
+          recordingTimer.textContent = formatTime(state.recordSeconds);
+        }, 1000);
+
+      } catch (err) {
+        showModal("Ralat Mikrofon", "Gagal mengakses mikrofon peranti.", "🎙️");
+      }
+    });
+
+    // BUTANG DENGAR BACAAN
+    btnListen.addEventListener("click", () => {
+      if (!state.recordedUrl || state.isRecording || state.isUploading) return;
+
+      try {
+        audioPlayback.currentTime = 0;
+        const playPromise = audioPlayback.play();
+
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              btnListen.disabled = true;
+              btnRecord.disabled = true;
+              listenIcon.textContent = "🔊";
+              listenLabel.textContent = "MENDENGAR...";
+              activityStepStatus.textContent = "Arahan: Dengar rakaman bacaan sehingga tamat.";
+            })
+            .catch(() => {
+              btnListen.disabled = false;
+              btnRecord.disabled = false;
+            });
+        }
+      } catch (e) {}
+    });
+
+    audioPlayback.addEventListener("ended", () => {
+      state.hasListenedCompletely = true;
+      btnListen.disabled = false;
+      btnRecord.disabled = false;
+      listenIcon.textContent = "🎧";
+      listenLabel.textContent = "2. DENGAR BACAAN";
+
+      // Aktifkan langkah 3 (Hantar)
+      btnSubmit.disabled = false;
+      stepBadge2.className = "text-slate-500";
+      stepBadge3.className = "text-emerald-700 font-bold";
+
+      activityStepStatus.textContent = 'Arahan: Selesai mendengar. Sila tekan butang "HANTAR RAKAMAN".';
+      activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-emerald-950 bg-emerald-100 py-1.5 px-3 rounded-xl border border-emerald-300";
+    });
+
+    audioPlayback.addEventListener("error", () => {
+      btnListen.disabled = false;
+      btnRecord.disabled = false;
+      listenIcon.textContent = "🎧";
+      listenLabel.textContent = "2. DENGAR BACAAN";
+    });
+
+    // =========================================================================
+    // 8. PENGHANTARAN KE GOOGLE DRIVE (WEB APP)
+    // =========================================================================
+    function blobToBase64Raw(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUrl = reader.result;
+          if (!dataUrl || typeof dataUrl !== "string") {
+            reject(new Error("Gagal menukar audio."));
+            return;
+          }
+          const base64String = dataUrl.split(",")[1];
+          if (!base64String) {
+            reject(new Error("Data audio kosong."));
+            return;
+          }
+          resolve(base64String);
+        };
+        reader.onerror = () => reject(new Error("Ralat membaca fail."));
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    function getFileExtensionFromMime(mimeType) {
+      if (mimeType.includes("mp4") || mimeType.includes("m4a")) return "m4a";
+      if (mimeType.includes("ogg")) return "ogg";
+      if (mimeType.includes("wav")) return "wav";
+      return "webm";
+    }
+
+    async function uploadRecordingToGoogleDrive() {
+      if (!state.recordedBlob || !state.hasListenedCompletely || state.isUploading) return;
+
+      if (!navigator.onLine) {
+        uploadErrorText.textContent = "Sambungan internet terputus. Sila semak internet.";
+        uploadErrorBox.classList.remove("hidden");
+        return;
+      }
+
+      state.isUploading = true;
+      uploadErrorBox.classList.add("hidden");
+
+      btnRecord.disabled = true;
+      btnListen.disabled = true;
+      btnSubmit.disabled = true;
+      submitIcon.textContent = "⏳";
+      submitLabel.textContent = "MENGHANTAR...";
+      activityStepStatus.textContent = "Sedang menghantar rakaman bacaan ayat kepada guru.";
+
+      try {
+        const base64Audio = await blobToBase64Raw(state.recordedBlob);
+        const cleanStudentName = sanitizeFileNamePart(state.studentName);
+        const ext = getFileExtensionFromMime(state.recordedMimeType);
+        const fileName = `${cleanStudentName}_Peti${state.activeChestId}.${ext}`;
+
+        const payload = {
+          audio: base64Audio,
+          mimeType: state.recordedMimeType,
+          fileName: fileName,
+          folderId: DRIVE_FOLDER_ID
+        };
+
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload),
+          redirect: "follow"
+        });
+
+        if (!response.ok) {
+          throw new Error(`Pelayan memulangkan status ralat (${response.status}).`);
+        }
+
+        const responseText = await response.text();
+        let resultData = null;
+
+        try {
+          resultData = JSON.parse(responseText);
+        } catch (parseErr) {
+          if (responseText.toLowerCase().includes("success") || responseText.toLowerCase().includes("berjaya") || responseText.toLowerCase().includes("ok")) {
+            resultData = { status: "success" };
+          } else {
+            throw new Error("Respons pelayan tidak sah.");
+          }
+        }
+
+        const isConfirmedSuccess =
+          resultData &&
+          (resultData.status === "success" ||
+            resultData.success === true ||
+            resultData.result === "success" ||
+            Boolean(resultData.fileId) ||
+            Boolean(resultData.url));
+
+        if (!isConfirmedSuccess) {
+          const serverMsg = (resultData && (resultData.message || resultData.error)) || "Gagal mengesahkan simpanan fail di Drive.";
+          throw new Error(serverMsg);
+        }
+
+        // MAINKAN BUNYI KEJAYAAN PENYIMPANAN
+        playSaveSuccessSound();
+
+        // PETI SELESAI
+        const completedId = state.activeChestId;
+        state.chestsStatus[completedId] = "completed";
+        state.activeChestId = null;
+
+        resetRecordingState();
+        renderChests();
+        updateProgressUI();
+
+        const totalCompleted = Object.values(state.chestsStatus).filter(s => s === "completed").length;
+
+        if (totalCompleted === 4) {
+          playVictorySound();
+          triggerVictoryCelebration();
+          switchScreen("victory");
+        } else {
+          switchScreen("adventure");
+          showModal(
+            "Rakaman Berjaya Disimpan!",
+            `Syabas ${state.studentName}! Peti ${completedId} selesai (${totalCompleted}/4). Sila putar kompas semula.`,
+            "🎉"
+          );
+        }
+
+      } catch (err) {
+        state.isUploading = false;
+        btnRecord.disabled = false;
+        btnListen.disabled = false;
+        btnSubmit.disabled = false;
+        submitIcon.textContent = "🚀";
+        submitLabel.textContent = "3. HANTAR RAKAMAN";
+
+        activityStepStatus.textContent = "Penghantaran gagal. Sila cuba lagi.";
+        activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-red-900 bg-red-100 py-1.5 px-3 rounded-xl border border-red-500";
+
+        uploadErrorText.textContent = `Gagal menghantar: ${err.message}`;
+        uploadErrorBox.classList.remove("hidden");
+      }
+    }
+
+    btnSubmit.addEventListener("click", uploadRecordingToGoogleDrive);
+    btnRetryUpload.addEventListener("click", uploadRecordingToGoogleDrive);
+
+    // =========================================================================
+    // 7. TAMAT KEMBARA & KONFETI
+    // =========================================================================
+    function triggerVictoryCelebration() {
+      const colors = ["#FACC15", "#EF4444", "#22C55E", "#3B82F6", "#F97316", "#A855F7"];
+      for (let i = 0; i < 55; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece rounded-sm";
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.width = `${7 + Math.random() * 8}px`;
+        piece.style.height = `${7 + Math.random() * 12}px`;
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = `${2.5 + Math.random() * 3}s`;
+        piece.style.animationDelay = `${Math.random() * 1}s`;
+        document.body.appendChild(piece);
+
+        setTimeout(() => { piece.remove(); }, 6000);
+      }
+    }
+
+    btnFinishAdventure.addEventListener("click", () => {
+      state.studentName = "";
+      state.isSpinning = false;
+      state.currentRotation = 0;
+      state.activeChestId = null;
+      state.chestsStatus = { 1: "closed", 2: "closed", 3: "closed", 4: "closed" };
+
+      compassNeedle.style.transition = "none";
+      compassNeedle.style.transform = "rotate(0deg)";
+      setTimeout(() => {
+        compassNeedle.style.transition = "transform 4.2s cubic-bezier(0.08, 0.82, 0.15, 1)";
+      }, 50);
+
+      studentNameInput.value = "";
+      updateStartButtonState();
+      topBar.classList.add("hidden");
+      switchScreen("home");
+    });
+  </script>
+</body>
+</html>
