@@ -25,11 +25,25 @@
       font-family: 'Inter', sans-serif;
       background-color: #C1E1C1;
       color: #29180D;
-      overflow: hidden; /* Mengelakkan scroll sepenuhnya untuk satu paparan muat skrin */
+      overflow-x: hidden;
       user-select: none;
-      height: 100vh;
+      min-height: 100vh;
       width: 100vw;
       margin: 0;
+    }
+
+    /* Mod Paparan Berdasarkan Pilihan Peranti */
+    body.mode-computer .parchment-card {
+      max-width: 1400px !important;
+      padding: 2.5rem !important;
+    }
+    body.mode-tablet .parchment-card {
+      max-width: 900px !important;
+      padding: 1.75rem !important;
+    }
+    body.mode-phone .parchment-card {
+      max-width: 480px !important;
+      padding: 1.25rem !important;
     }
 
     h1, h2, h3, .font-adventure {
@@ -42,7 +56,7 @@
         radial-gradient(circle at 50% 30%, rgba(193, 225, 193, 0.45) 0%, rgba(140, 185, 140, 0.9) 70%),
         linear-gradient(135deg, #A3D9A3 0%, #C1E1C1 50%, #8FB88F 100%);
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     .adventure-bg::before {
@@ -90,7 +104,6 @@
       position: relative;
       z-index: 5;
       width: 92%;
-      max-width: 1400px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -151,7 +164,7 @@
     }
   </style>
 </head>
-<body class="adventure-bg h-screen w-screen flex flex-col justify-between overflow-hidden">
+<body class="adventure-bg min-h-screen w-screen flex flex-col justify-between mode-computer">
 
   <!-- PARTIKEL LATAR BELAKANG -->
   <div id="particles-container" class="absolute inset-0 overflow-hidden pointer-events-none z-1"></div>
@@ -184,15 +197,15 @@
     </div>
   </header>
 
-  <!-- KANDUNGAN UTAMA (SATU PAPARAN TANPA SCROLL) -->
-  <main class="relative z-20 flex-grow flex items-center justify-center p-3 sm:p-4 overflow-hidden">
+  <!-- KANDUNGAN UTAMA -->
+  <main class="relative z-20 flex-grow flex items-center justify-center p-3 sm:p-5 my-auto">
     
     <!-- ==================== 1. HALAMAN UTAMA ==================== -->
-    <section id="screen-home" class="parchment-card rounded-2xl p-6 sm:p-9 text-center relative overflow-hidden shadow-2xl !max-w-xl sm:!max-w-2xl !w-[96%]">
+    <section id="screen-home" class="parchment-card rounded-2xl p-6 sm:p-9 text-center relative overflow-hidden shadow-2xl">
       <div class="absolute top-2 left-3 text-xl opacity-70">🌴</div>
       <div class="absolute top-2 right-3 text-xl opacity-70">🦜</div>
 
-      <div class="w-32 h-28 mx-auto mb-3">
+      <div class="w-28 h-24 sm:w-32 sm:h-28 mx-auto mb-2">
         <svg viewBox="0 0 240 180" class="w-full h-full drop-shadow">
           <ellipse cx="120" cy="145" rx="105" ry="26" fill="#0284C7" opacity="0.25"/>
           <path d="M35 135 Q120 95 205 135 Z" fill="#FDE047" stroke="#B45309" stroke-width="3"/>
@@ -208,47 +221,72 @@
         </svg>
       </div>
 
-      <div class="mb-5 mt-2">
-        <h1 class="font-adventure text-3xl sm:text-5xl font-bold text-amber-800 tracking-tight mb-2">
-          KEMBARA BACAAN
+      <div class="mb-4 mt-1">
+        <h1 class="font-adventure text-2xl sm:text-4xl lg:text-5xl font-bold text-amber-800 tracking-tight mb-1">
+          KEMBARA AYAT
         </h1>
-        <p class="font-adventure text-lg sm:text-2xl font-bold text-[#3A2E1B] tracking-wide">
-          (BACA, REKOD DAN DENGAR)
+        <p class="font-adventure text-base sm:text-xl font-bold text-[#3A2E1B] tracking-wide">
+          (REKOD, BACA DAN DENGAR)
         </p>
       </div>
 
-      <div class="max-w-md mx-auto space-y-3.5 bg-white/85 p-5 rounded-xl border-2 border-amber-700/30 text-left">
+      <div class="max-w-md mx-auto space-y-3 bg-white/85 p-4 sm:p-5 rounded-xl border-2 border-amber-700/30 text-left">
+        
+        <!-- 1. PILIHAN PAPARAN PERANTI -->
         <div>
-          <label for="student-name-input" class="block font-adventure text-sm sm:text-base font-bold text-[#3A2E1B] mb-1">
-            NAMA MURID:
+          <label class="block font-adventure text-xs sm:text-sm font-bold text-[#3A2E1B] mb-1">
+            1. PILIH PAPARAN PERANTI
+          </label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" data-device="computer" class="device-btn py-2 px-2 rounded-lg bg-amber-600 text-white font-adventure text-xs font-bold border-2 border-amber-800 shadow">
+              💻 Komputer
+            </button>
+            <button type="button" data-device="tablet" class="device-btn py-2 px-2 rounded-lg bg-amber-100 hover:bg-amber-200 text-[#3A2E1B] font-adventure text-xs font-bold border-2 border-amber-600 shadow">
+              📱 Tab/Ipad
+            </button>
+            <button type="button" data-device="phone" class="device-btn py-2 px-2 rounded-lg bg-amber-100 hover:bg-amber-200 text-[#3A2E1B] font-adventure text-xs font-bold border-2 border-amber-600 shadow">
+              📱 Telefon
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. TEKAN BUTANG AKSES AUDIO (MIKROFON) -->
+        <div>
+          <label class="block font-adventure text-xs sm:text-sm font-bold text-[#3A2E1B] mb-1">
+            2. TEKAN BUTANG AKSES AUDIO (MIKROFON)
+          </label>
+          <button 
+            id="btn-mic-access" 
+            type="button"
+            class="btn-adventure w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-adventure text-sm sm:text-base font-bold flex items-center justify-center gap-2 border-2 border-sky-800"
+          >
+            <span class="text-lg">🎙️</span>
+            <span id="mic-btn-text">AKSES AUDIO (MIKROFON)</span>
+          </button>
+          <p id="mic-status-badge" class="mt-1 text-xs font-bold text-amber-800 bg-amber-100 py-1.5 px-3 rounded-lg text-center">
+            Status Mikrofon: Belum Diaktifkan
+          </p>
+        </div>
+
+        <!-- 3. NAMA -->
+        <div>
+          <label for="student-name-input" class="block font-adventure text-xs sm:text-sm font-bold text-[#3A2E1B] mb-1">
+            3. NAMA
           </label>
           <input 
             type="text" 
             id="student-name-input" 
             placeholder="Taip nama kamu di sini..." 
             autocomplete="off"
-            class="w-full px-4 py-3 text-base sm:text-lg font-bold rounded-lg border-2 border-amber-600 focus:border-emerald-600 focus:outline-none bg-amber-50 text-[#29180D]"
+            class="w-full px-3 py-2.5 text-base font-bold rounded-lg border-2 border-amber-600 focus:border-emerald-600 focus:outline-none bg-amber-50 text-[#29180D]"
           >
         </div>
-
-        <button 
-          id="btn-mic-access" 
-          type="button"
-          class="btn-adventure w-full py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-adventure text-base sm:text-lg font-bold flex items-center justify-center gap-2 border-2 border-sky-800"
-        >
-          <span class="text-xl">🎙️</span>
-          <span id="mic-btn-text">AKSES AUDIO (MIKROFON)</span>
-        </button>
-
-        <p id="mic-status-badge" class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-100 py-1.5 px-3 rounded-lg text-center">
-          Status Mikrofon: Belum Diaktifkan
-        </p>
 
         <button 
           id="btn-start-adventure" 
           type="button"
           disabled
-          class="btn-adventure w-full py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-adventure text-xl sm:text-2xl font-bold flex items-center justify-center gap-2 border-2 border-emerald-900"
+          class="btn-adventure w-full py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-adventure text-lg sm:text-xl font-bold flex items-center justify-center gap-2 border-2 border-emerald-900"
         >
           <span>🗺️</span>
           <span>MULA KEMBARA</span>
@@ -257,11 +295,11 @@
     </section>
 
     <!-- ==================== 2 & 3. PAPARAN KEMBARA (KOMPAS + 4 PETI) ==================== -->
-    <section id="screen-adventure" class="hidden w-full h-full flex items-center justify-center">
+    <section id="screen-adventure" class="hidden w-full flex items-center justify-center">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full items-center">
         
         <!-- KOMPAS KEMBARA -->
-        <div class="md:col-span-5 parchment-card rounded-2xl p-4 flex flex-col items-center text-center min-h-[580px] sm:min-h-[630px] justify-between">
+        <div class="md:col-span-5 parchment-card rounded-2xl p-4 flex flex-col items-center text-center justify-between">
           <div class="w-full flex flex-col items-center">
             <h2 class="font-adventure text-xl font-bold text-[#3A2E1B] mb-2">KOMPAS KEMBARA</h2>
             <div id="compass-instruction" class="w-full max-w-xs text-xs sm:text-sm font-bold text-[#3A2E1B] bg-white border-2 border-amber-600/60 py-2 px-3 rounded-xl shadow-md mb-2">
@@ -269,7 +307,7 @@
             </div>
           </div>
 
-          <div class="relative w-56 h-56 sm:w-64 sm:h-64 my-1">
+          <div class="relative w-48 h-48 sm:w-56 sm:h-56 my-2">
             <svg viewBox="0 0 300 300" class="w-full h-full drop-shadow-xl">
               <circle cx="150" cy="150" r="142" fill="#78492A" stroke="#451A03" stroke-width="6"/>
               <circle cx="150" cy="150" r="128" fill="#F59E0B" stroke="#FEF08A" stroke-width="3"/>
@@ -308,7 +346,7 @@
           <button 
             id="btn-spin-compass" 
             type="button"
-            class="btn-adventure mt-3 w-full max-w-xs py-3 px-6 rounded-xl bg-amber-500 hover:bg-amber-600 text-[#29180D] font-adventure text-xl font-bold border-2 border-[#78492A] flex items-center justify-center gap-2"
+            class="btn-adventure mt-2 w-full max-w-xs py-3 px-6 rounded-xl bg-amber-500 hover:bg-amber-600 text-[#29180D] font-adventure text-lg sm:text-xl font-bold border-2 border-[#78492A] flex items-center justify-center gap-2"
           >
             <span>🧭</span>
             <span>PUTAR KOMPAS</span>
@@ -316,7 +354,7 @@
         </div>
 
         <!-- EMPAT PETI HARTA KARUN -->
-        <div class="md:col-span-7 parchment-card rounded-2xl p-4 min-h-[580px] sm:min-h-[630px] flex flex-col justify-between">
+        <div class="md:col-span-7 parchment-card rounded-2xl p-4 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-2">
               <h2 class="font-adventure text-xl font-bold text-[#3A2E1B]">PETI KEMBARA</h2>
@@ -327,7 +365,7 @@
             </div>
           </div>
 
-          <div id="chests-grid" class="grid grid-cols-2 gap-3 my-auto">
+          <div id="chests-grid" class="grid grid-cols-2 gap-3 my-2">
             <!-- Dijana dinamik oleh JavaScript -->
           </div>
 
@@ -369,7 +407,7 @@
       </div>
 
       <!-- FOKUS UTAMA: GAMBAR BACAAN (BESAR DAN JELAS) -->
-      <div class="bg-white rounded-xl border-3 border-[#78492A] p-2 mb-2.5 shadow-inner flex flex-col items-center justify-center relative h-[450px] sm:h-[480px]">
+      <div class="bg-white rounded-xl border-3 border-[#78492A] p-2 mb-2.5 shadow-inner flex flex-col items-center justify-center relative h-[380px] sm:h-[430px]">
         <div id="image-loader" class="flex flex-col items-center justify-center text-amber-800 py-6">
           <div class="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-1"></div>
           <p class="font-adventure text-xs font-bold">Memuatkan gambar...</p>
@@ -379,7 +417,7 @@
           id="chest-reading-image" 
           src="" 
           alt="Gambar Bacaan Peti Harta Karun" 
-          class="hidden max-h-[435px] sm:max-h-[460px] w-auto max-w-full object-contain rounded-lg shadow-xs"
+          class="hidden max-h-[365px] sm:max-h-[415px] w-auto max-w-full object-contain rounded-lg shadow-xs"
         >
 
         <div id="image-error-box" class="hidden text-center p-4">
@@ -409,7 +447,7 @@
         <button 
           id="btn-record" 
           type="button"
-          class="btn-adventure py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-adventure text-lg sm:text-xl font-bold border-2 border-red-900 flex items-center justify-center gap-2"
+          class="btn-adventure py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-adventure text-base sm:text-lg font-bold border-2 border-red-900 flex items-center justify-center gap-2"
         >
           <span id="record-icon">🔴</span>
           <span id="record-label">1. REKOD BACAAN</span>
@@ -420,7 +458,7 @@
           id="btn-listen" 
           type="button"
           disabled
-          class="btn-adventure py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-adventure text-lg sm:text-xl font-bold border-2 border-slate-950 flex items-center justify-center gap-2"
+          class="btn-adventure py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-adventure text-base sm:text-lg font-bold border-2 border-slate-950 flex items-center justify-center gap-2"
         >
           <span id="listen-icon">🎧</span>
           <span id="listen-label">2. DENGAR BACAAN</span>
@@ -431,7 +469,7 @@
           id="btn-submit" 
           type="button"
           disabled
-          class="btn-adventure py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-adventure text-lg sm:text-xl font-bold border-2 border-emerald-900 flex items-center justify-center gap-2"
+          class="btn-adventure py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-adventure text-base sm:text-lg font-bold border-2 border-emerald-900 flex items-center justify-center gap-2"
         >
           <span id="submit-icon">🚀</span>
           <span id="submit-label">3. HANTAR RAKAMAN</span>
@@ -458,7 +496,7 @@
       <div class="absolute top-4 left-6 text-2xl">✨</div>
       <div class="absolute top-6 right-6 text-2xl">🌟</div>
 
-      <div class="w-44 h-36 mx-auto mb-3">
+      <div class="w-36 h-28 mx-auto mb-2">
         <svg viewBox="0 0 260 200" class="w-full h-full drop-shadow-xl">
           <circle cx="130" cy="110" r="85" fill="#FDE047" opacity="0.45"/>
           <path d="M55 85 Q130 25 205 85 L195 100 L65 100 Z" fill="#78350F" stroke="#451A03" stroke-width="4"/>
@@ -508,14 +546,16 @@
 
   <!-- MODAL MESEJ AMARAN / RALAT (Ganti alert()) -->
   <div id="custom-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="parchment-card rounded-2xl max-w-sm w-full p-5 text-center shadow-2xl">
-      <div id="modal-icon" class="text-4xl mb-2">⚠️</div>
-      <h3 id="modal-title" class="font-adventure text-xl font-bold text-[#3A2E1B] mb-1">Perhatian</h3>
-      <p id="modal-message" class="font-semibold text-sm text-[#29180D] mb-4"></p>
+    <div class="parchment-card rounded-2xl max-w-sm w-full p-8 text-center shadow-2xl min-h-[260px] flex flex-col justify-between">
+      <div>
+        <div id="modal-icon" class="text-5xl mb-3">⚠️</div>
+        <h3 id="modal-title" class="font-adventure text-xl font-bold text-[#3A2E1B] mb-2">Perhatian</h3>
+        <p id="modal-message" class="font-semibold text-sm text-[#29180D] mb-6 leading-relaxed"></p>
+      </div>
       <button 
         id="modal-close-btn" 
         type="button"
-        class="btn-adventure w-full py-2.5 px-5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-adventure text-lg font-bold border border-amber-900"
+        class="btn-adventure w-full py-3 px-5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-adventure text-lg font-bold border border-amber-900"
       >
         FAHAM
       </button>
@@ -674,21 +714,19 @@
       } catch (e) {}
     }
 
-    // Gabungan Urutan Bunyi Peti Dibuka
     function playChestOpenSequence() {
       playKeyUnlockSound();
       setTimeout(playChestCreakSound, 180);
       setTimeout(playCoinSparkleSound, 400);
     }
 
-    // Bunyi Kejayaan Penyimpanan Rakaman (Game Success Sound)
     function playSaveSuccessSound() {
       if (!soundEnabled) return;
       const ctx = getAudioContext();
       if (!ctx) return;
       try {
         const now = ctx.currentTime;
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        const notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -704,14 +742,13 @@
       } catch (e) {}
     }
 
-    // Bunyi Kemenangan Meriah
     function playVictorySound() {
       if (!soundEnabled) return;
       const ctx = getAudioContext();
       if (!ctx) return;
       try {
         const now = ctx.currentTime;
-        const fanfare = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50]; // C5, E5, G5, C6, G5, C6
+        const fanfare = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
         const times = [0, 0.15, 0.3, 0.45, 0.7, 0.85];
         fanfare.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
@@ -728,14 +765,13 @@
       } catch (e) {}
     }
 
-    // Bunyi Mula Kembara (Magical Chime / Adventure Start)
     function playStartAdventureSound() {
       if (!soundEnabled) return;
       const ctx = getAudioContext();
       if (!ctx) return;
       try {
         const now = ctx.currentTime;
-        const notes = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5
+        const notes = [440, 554.37, 659.25, 880];
         notes.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -812,8 +848,6 @@
     const recordingTimer = document.getElementById("recording-timer");
     const activityStepStatus = document.getElementById("activity-step-status");
     const audioPlayback = document.getElementById("audio-playback");
-    const waveformCanvas = document.getElementById("waveform-canvas");
-    let canvasCtx = waveformCanvas ? waveformCanvas.getContext("2d") : null;
 
     const stepBadge1 = document.getElementById("step-badge-1");
     const stepBadge2 = document.getElementById("step-badge-2");
@@ -843,7 +877,22 @@
     const modalMessage = document.getElementById("modal-message");
     const modalCloseBtn = document.getElementById("modal-close-btn");
 
-    // Bina partikel latar belakang secara automatik
+    // Pemilihan Peranti (Komputer, Tab, Telefon)
+    document.querySelectorAll(".device-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const mode = btn.getAttribute("data-device");
+        document.body.classList.remove("mode-computer", "mode-tablet", "mode-phone");
+        document.body.classList.add(`mode-${mode}`);
+
+        document.querySelectorAll(".device-btn").forEach(b => {
+          b.classList.remove("bg-amber-600", "text-white", "border-amber-800");
+          b.classList.add("bg-amber-100", "text-[#3A2E1B]", "border-amber-600");
+        });
+        btn.classList.remove("bg-amber-100", "text-[#3A2E1B]", "border-amber-600");
+        btn.classList.add("bg-amber-600", "text-white", "border-amber-800");
+      });
+    });
+
     function initParticles() {
       const container = document.getElementById("particles-container");
       if (!container) return;
@@ -860,7 +909,6 @@
     }
     initParticles();
 
-    // Kawalan Bunyi ON/OFF
     btnToggleSound.addEventListener("click", () => {
       soundEnabled = !soundEnabled;
       if (soundEnabled) {
@@ -900,9 +948,6 @@
       btnStartAdventure.disabled = !(hasName && state.micGranted);
     }
 
-    // =========================================================================
-    // 1. HALAMAN UTAMA & MIKROFON
-    // =========================================================================
     studentNameInput.addEventListener("input", () => {
       state.studentName = studentNameInput.value.trim();
       updateStartButtonState();
@@ -910,6 +955,12 @@
 
     btnMicAccess.addEventListener("click", async () => {
       getAudioContext();
+      
+      // Jika mikrofon sudah diaktifkan sebelum ini, jangan minta kebenaran semula
+      if (state.micGranted && state.mediaStream && state.mediaStream.active) {
+        return;
+      }
+
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         showModal("Pelayar Tidak Disokong", "Peranti atau pelayar ini tidak menyokong rakaman mikrofon.", "❌");
         return;
@@ -964,9 +1015,6 @@
       switchScreen("adventure");
     });
 
-    // =========================================================================
-    // 2 & 3 & 10. KOMPAS & PETI HARTA KARUN
-    // =========================================================================
     function renderChests(justOpenedId = null) {
       chestsGrid.innerHTML = "";
 
@@ -991,7 +1039,7 @@
 
         const chestSvg = isClosed
           ? `
-            <svg viewBox="0 0 140 110" class="w-24 h-20 mx-auto drop-shadow">
+            <svg viewBox="0 0 140 110" class="w-20 h-16 sm:w-24 sm:h-20 mx-auto drop-shadow">
               <path d="M22 45 Q70 18 118 45 L118 55 L22 55 Z" fill="#78350F" stroke="#451A03" stroke-width="3"/>
               <rect x="22" y="53" width="96" height="46" rx="6" fill="#92400E" stroke="#451A03" stroke-width="3"/>
               <rect x="22" y="51" width="96" height="8" fill="#FACC15" stroke="#A16207" stroke-width="1.5"/>
@@ -999,7 +1047,7 @@
               <circle cx="70" cy="57" r="3" fill="#451A03"/>
             </svg>`
           : `
-            <svg viewBox="0 0 140 110" class="w-24 h-20 mx-auto drop-shadow ${justOpenedId === chest.id ? 'chest-open-anim' : ''}">
+            <svg viewBox="0 0 140 110" class="w-20 h-16 sm:w-24 sm:h-20 mx-auto drop-shadow ${justOpenedId === chest.id ? 'chest-open-anim' : ''}">
               <path d="M22 38 Q70 8 118 38 L112 52 L28 52 Z" fill="#78350F" stroke="#451A03" stroke-width="3"/>
               <ellipse cx="70" cy="54" rx="40" ry="12" fill="#FACC15" stroke="#A16207" stroke-width="2"/>
               <circle cx="58" cy="51" r="6" fill="#FEF08A"/>
@@ -1011,10 +1059,10 @@
             </svg>`;
 
         const card = document.createElement("div");
-        card.className = `rounded-xl border-2 p-3 flex flex-col items-center text-center transition-all ${cardBorder}`;
+        card.className = `rounded-xl border-2 p-2.5 sm:p-3 flex flex-col items-center text-center transition-all ${cardBorder}`;
         card.innerHTML = `
           <div class="w-full flex items-center justify-between mb-0.5">
-            <span class="font-adventure text-sm font-bold text-[#3A2E1B]">PETI ${chest.id}</span>
+            <span class="font-adventure text-xs sm:text-sm font-bold text-[#3A2E1B]">PETI ${chest.id}</span>
             ${statusBadge}
           </div>
           ${chestSvg}
@@ -1059,7 +1107,6 @@
       btnSpinCompass.disabled = true;
       compassInstruction.textContent = "Kompas sedang berpusing...";
 
-      // Bunyi interaktif semasa kompas berpusing
       if (compassSpinInterval) clearInterval(compassSpinInterval);
       let spinTicks = 0;
       compassSpinInterval = setInterval(() => {
@@ -1085,7 +1132,6 @@
 
       compassNeedle.style.transform = `rotate(${totalSpin}deg)`;
 
-      // Selepas putaran selesai (~4.2 saat)
       setTimeout(() => {
         state.isSpinning = false;
         if (compassSpinInterval) {
@@ -1105,9 +1151,6 @@
       }, 4250);
     });
 
-    // =========================================================================
-    // 4 & 5 & 6 & 7 & 8. AKTIVITI & GELOMBANG SUARA SEBENAR
-    // =========================================================================
     function loadChestImage(chestObj, attemptIndex = 0) {
       imageLoader.classList.remove("hidden");
       chestReadingImage.classList.add("hidden");
@@ -1167,7 +1210,6 @@
       audioPlayback.pause();
       audioPlayback.removeAttribute("src");
 
-      // Set semula langkah turutan UI
       stepBadge1.className = "text-emerald-700 font-bold";
       stepBadge2.className = "text-slate-500";
       stepBadge3.className = "text-slate-500";
@@ -1197,7 +1239,7 @@
     }
 
     function getSupportedAudioMimeType() {
-      const types = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"];
+      const types = ["audio/mp4", "audio/m4a", "audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"];
       for (const type of types) {
         if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
           return type;
@@ -1206,11 +1248,9 @@
       return "";
     }
 
-    // BUTANG REKOD / HENTI / REKOD SEMULA
     btnRecord.addEventListener("click", async () => {
       if (state.isUploading) return;
 
-      // Jika sedang merakam -> Hentikan rakaman
       if (state.isRecording && state.mediaRecorder) {
         try {
           state.mediaRecorder.stop();
@@ -1218,7 +1258,6 @@
         return;
       }
 
-      // Mulakan rakaman baharu atau rekod semula
       try {
         if (!state.mediaStream || !state.mediaStream.active) {
           state.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -1241,7 +1280,7 @@
         const recorder = new MediaRecorder(state.mediaStream, options);
 
         state.mediaRecorder = recorder;
-        state.recordedMimeType = recorder.mimeType || mimeType || "audio/webm";
+        state.recordedMimeType = recorder.mimeType && recorder.mimeType.includes("mp4") ? "audio/mp4" : (recorder.mimeType || mimeType || "audio/mp4");
 
         recorder.ondataavailable = (event) => {
           if (event.data && event.data.size > 0) {
@@ -1260,46 +1299,44 @@
             return;
           }
 
-          const cleanMime = state.recordedMimeType.split(";")[0];
-          const blob = new Blob(state.audioChunks, { type: cleanMime });
+          const blobType = state.recordedMimeType.includes("mp4") ? "audio/mp4" : (state.recordedMimeType.split(";")[0] || "audio/mp4");
+          const blob = new Blob(state.audioChunks, { type: blobType });
           state.recordedBlob = blob;
-          state.recordedMimeType = cleanMime;
+          state.recordedMimeType = blobType;
           state.recordedUrl = URL.createObjectURL(blob);
 
           audioPlayback.src = state.recordedUrl;
           audioPlayback.load();
 
-          // Tukar butang kepada REKOD SEMULA
-        btnRecord.disabled = false;
-        btnRecord.classList.remove("recording-active");
-        recordIcon.textContent = "🔄";
-        recordLabel.textContent = "REKOD SEMULA";
+          btnRecord.disabled = false;
+          btnRecord.classList.remove("recording-active");
+          recordIcon.textContent = "🔄";
+          recordLabel.textContent = "REKOD SEMULA";
 
-        // Aktifkan langkah 2 (Dengar)
-        btnListen.disabled = false;
-        stepBadge1.className = "text-slate-500";
-        stepBadge2.className = "text-sky-700 font-bold";
+          btnListen.disabled = false;
+          stepBadge1.className = "text-slate-500";
+          stepBadge2.className = "text-sky-700 font-bold";
 
-        activityStepStatus.textContent = "Arahan: Bacaan telah direkod. Sila tekan butang \"DENGAR BACAAN\".";
-        activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-slate-900 bg-slate-200 py-1.5 px-3 rounded-xl border border-slate-400";
-      };
+          activityStepStatus.textContent = "Arahan: Bacaan telah direkod. Sila tekan butang \"DENGAR BACAAN\".";
+          activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-slate-900 bg-slate-200 py-1.5 px-3 rounded-xl border border-slate-400";
+        };
 
-      recorder.start(200);
-      state.isRecording = true;
+        recorder.start(200);
+        state.isRecording = true;
 
-      btnRecord.classList.add("recording-active");
-      recordIcon.textContent = "⏹️";
-      recordLabel.textContent = "HENTI RAKAMAN";
+        btnRecord.classList.add("recording-active");
+        recordIcon.textContent = "⏹️";
+        recordLabel.textContent = "HENTI RAKAMAN";
 
-      state.recordSeconds = 0;
-      recordingTimer.textContent = "00:00";
-      recordingStatusOverlay.classList.remove("hidden");
-      recordingStatusOverlay.classList.add("flex");
+        state.recordSeconds = 0;
+        recordingTimer.textContent = "00:00";
+        recordingStatusOverlay.classList.remove("hidden");
+        recordingStatusOverlay.classList.add("flex");
 
-      activityStepStatus.textContent = 'Arahan: Sedang merekod bacaan. Tekan "HENTI RAKAMAN" apabila selesai.';
-      activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-red-950 bg-red-100 py-1.5 px-3 rounded-xl border border-red-300";
+        activityStepStatus.textContent = 'Arahan: Sedang merekod bacaan. Tekan "HENTI RAKAMAN" apabila selesai.';
+        activityStepStatus.className = "text-center font-bold text-sm sm:text-base text-red-950 bg-red-100 py-1.5 px-3 rounded-xl border border-red-300";
 
-      state.timerInterval = setInterval(() => {
+        state.timerInterval = setInterval(() => {
           state.recordSeconds += 1;
           recordingTimer.textContent = formatTime(state.recordSeconds);
         }, 1000);
@@ -1309,7 +1346,6 @@
       }
     });
 
-    // BUTANG DENGAR BACAAN
     btnListen.addEventListener("click", () => {
       if (!state.recordedUrl || state.isRecording || state.isUploading) return;
 
@@ -1341,7 +1377,6 @@
       listenIcon.textContent = "🎧";
       listenLabel.textContent = "2. DENGAR BACAAN";
 
-      // Aktifkan langkah 3 (Hantar)
       btnSubmit.disabled = false;
       stepBadge2.className = "text-slate-500";
       stepBadge3.className = "text-emerald-700 font-bold";
@@ -1357,9 +1392,6 @@
       listenLabel.textContent = "2. DENGAR BACAAN";
     });
 
-    // =========================================================================
-    // 8. PENGHANTARAN KE GOOGLE DRIVE (WEB APP)
-    // =========================================================================
     function blobToBase64Raw(blob) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -1385,7 +1417,7 @@
       if (mimeType.includes("mp4") || mimeType.includes("m4a")) return "m4a";
       if (mimeType.includes("ogg")) return "ogg";
       if (mimeType.includes("wav")) return "wav";
-      return "webm";
+      return "m4a";
     }
 
     async function uploadRecordingToGoogleDrive() {
@@ -1457,10 +1489,8 @@
           throw new Error(serverMsg);
         }
 
-        // MAINKAN BUNYI KEJAYAAN PENYIMPANAN
         playSaveSuccessSound();
 
-        // PETI SELESAI
         const completedId = state.activeChestId;
         state.chestsStatus[completedId] = "completed";
         state.activeChestId = null;
@@ -1478,7 +1508,7 @@
         } else {
           switchScreen("adventure");
           showModal(
-            "Rakaman Berjaya Disimpan!",
+            "Rakaman Berjaya Dihantar!",
             `Syabas ${state.studentName}! Peti ${completedId} selesai (${totalCompleted}/4). Sila putar kompas semula.`,
             "🎉"
           );
@@ -1503,9 +1533,6 @@
     btnSubmit.addEventListener("click", uploadRecordingToGoogleDrive);
     btnRetryUpload.addEventListener("click", uploadRecordingToGoogleDrive);
 
-    // =========================================================================
-    // 7. TAMAT KEMBARA & KONFETI
-    // =========================================================================
     function triggerVictoryCelebration() {
       const colors = ["#FACC15", "#EF4444", "#22C55E", "#3B82F6", "#F97316", "#A855F7"];
       for (let i = 0; i < 55; i++) {
